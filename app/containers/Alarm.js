@@ -58,14 +58,16 @@ class Alarm extends Component {
           onToggleEditDialog={this.onToggleEditDialog}
         />
         {/* Add alarm button */}
-        <View style={styles.bottom}>
-          <TouchableOpacity
-            onPress={this.onToggleAddDialog}
-            style={styles.add}
-          >
-            <Text style={styles.addSign}>+</Text>
-          </TouchableOpacity>
-        </View>
+        { editIndex < 0 &&
+          <View style={styles.bottom}>
+            <TouchableOpacity
+              onPress={this.onToggleAddDialog}
+              style={styles.add}
+            >
+              <Text style={styles.addSign}>+</Text>
+            </TouchableOpacity>
+          </View>
+        }
         {/* Add alarm dialog */}
         { showAddDialog &&
           <EditDialog
@@ -81,6 +83,7 @@ class Alarm extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'space-between',
   },
   bottom: {
     flexDirection: 'row',

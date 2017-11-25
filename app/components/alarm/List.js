@@ -52,9 +52,7 @@ export default class List extends Component {
 
     if (alarms.length === 0) {
       return (
-        <ScrollView>
-          <Text style={styles.notFound}>No alarms found</Text>
-        </ScrollView>
+        <Text style={styles.notFound}>No alarms found</Text>
       )
     }
 
