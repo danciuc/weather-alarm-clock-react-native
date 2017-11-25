@@ -2,18 +2,18 @@ const types = {
   EDIT_ALARM: 'EDIT_ALARM',
   REMOVE_ALARM: 'REMOVE_ALARM',
   TOGGLE_ALARM_ACTIVE: 'TOGGLE_ALARM_ACTIVE',
-  TOGGLE_EDIT_DIALOG: 'TOGGLE_EDIT_DIALOG'
+  TOGGLE_EDIT_DIALOG: 'TOGGLE_EDIT_DIALOG',
+  TOGGLE_ADD_DIALOG: 'TOGGLE_ADD_DIALOG'
 }
 
 export const actionCreators = {
-  editAlarm: (hour, minute, label='', index) => {
+  editAlarm: (hour, minute, label='') => {
     return {
       type: types.EDIT_ALARM,
       payload: {
         hour: hour,
         minute: minute,
-        label: label,
-        index: index
+        label: label
       }
     }
   },
@@ -26,8 +26,12 @@ export const actionCreators = {
     return {type: types.TOGGLE_ALARM_ACTIVE, payload: index}
   },
 
-  toggleEditDialog: () => {
-    return {type: types.TOGGLE_EDIT_DIALOG}
+  toggleEditDialog: (index) => {
+    return {type: types.TOGGLE_EDIT_DIALOG, payload: index}
+  },
+
+  toggleAddDialog: () => {
+    return {type: types.TOGGLE_ADD_DIALOG}
   }
 }
 
@@ -37,18 +41,17 @@ const initialState = {
     {hour: '7', minute: '09', label: 'Alarm 2', active: false},
     {hour: '7', minute: '09', label: 'Alarm 2 Alarm 2 Alarm 2 Alarm 2 Alarm 2 Alarm 2 Alarm 2 Alarm 2 Alarm 2 Alarm 2 Alarm 2 Alarm 2', active: false}
   ],
-  showEditDialog: false
+  editIndex: -1,
+  showAddDialog: false
 }
 
 export const reducer = (state=initialState, action) => {
   const {type, payload} = action
-  const {alarms, showEditDialog} = state
+  const {alarms, showAddDialog, editIndex} = state
 
   switch(type) {
     case types.EDIT_ALARM: {
-      // If index is null, it means that we got a new alarm so we should add it to the list
-      const {index} = payload
-      if (index === null) index = alarms.length
+      let index = editIndex > -1 ? editIndex : alarms.length
 
       alarms[index] = {
         hour: payload.hour,
@@ -59,7 +62,8 @@ export const reducer = (state=initialState, action) => {
 
       return {
         ...state,
-        showEditDialog: false,
+        showAddDialog: false,
+        editIndex: -1,
         alarms: alarms
       }
     }
@@ -85,9 +89,17 @@ export const reducer = (state=initialState, action) => {
     }
 
     case types.TOGGLE_EDIT_DIALOG: {
+      const index = payload === undefined ? -1 : payload
       return {
         ...state,
-        showEditDialog: !showEditDialog
+        editIndex: index
+      }
+    }
+
+    case types.TOGGLE_ADD_DIALOG: {
+      return {
+        ...state,
+        showAddDialog: !showAddDialog
       }
     }
 

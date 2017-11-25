@@ -9,24 +9,20 @@ export default class List extends Component {
 
   static propTypes = {
     alarms: PropTypes.array.isRequired,
-    showEditDialog: PropTypes.bool.isRequired,
+    editIndex: PropTypes.number.isRequired,
     onEditAlarm: PropTypes.func.isRequired,
     onRemoveAlarm: PropTypes.func.isRequired,
     onToggleAlarmActive: PropTypes.func.isRequired,
     onToggleEditDialog: PropTypes.func.isRequired
   }
 
-  onEditAlarm = (index) => {
-
-  }
-
   renderAlarm = (alarm, index) => {
-    const {onEditAlarm, onToggleAlarmActive, onRemoveAlarm} = this.props
+    const {onToggleEditDialog, onToggleAlarmActive, onRemoveAlarm, onEditAlarm} = this.props
 
     return (
       <View key={index} style={styles.item}>
         <View style={styles.leftSection}>
-          <TouchableOpacity onPress={() => this.onEditAlarm(index)}>
+          <TouchableOpacity onPress={() => onToggleEditDialog(index)}>
             <Text style={[styles.time, !alarm.active && styles.timeInactive]}>
               {alarm.hour}:{alarm.minute}
             </Text>
@@ -47,7 +43,12 @@ export default class List extends Component {
   }
 
   render() {
-    const {alarms, showEditDialog, onEditAlarm, onToggleEditDialog} = this.props
+    const {alarms, editIndex, onEditAlarm, onToggleEditDialog} = this.props
+
+    let alarmToEdit = {}
+    if (editIndex > -1) {
+      alarmToEdit = alarms[editIndex]
+    }
 
     if (alarms.length === 0) {
       return (
@@ -62,8 +63,9 @@ export default class List extends Component {
         <ScrollView>
           {alarms.map(this.renderAlarm)}
         </ScrollView>
-        {false &&
+        {editIndex > -1 &&
           <EditDialog
+            alarmToEdit={alarmToEdit}
             onEditAlarm={onEditAlarm}
             onToggleEditDialog={onToggleEditDialog}
           />

@@ -11,19 +11,20 @@ import EditDialog from '../components/alarm/EditDialog'
 
 const mapStateToProps = (state) => ({
   alarms: state.alarms,
-  showEditDialog: state.showEditDialog
+  editIndex: state.editIndex,
+  showAddDialog: state.showAddDialog
 })
 
 class Alarm extends Component {
 
   static propTypes = {
     alarms: PropTypes.array.isRequired,
-    showEditDialog: PropTypes.bool.isRequired,
+    editIndex: PropTypes.number.isRequired,
     dispatch: PropTypes.func.isRequired,
   }
 
-  onEditAlarm = (hour, minute, label, index) => {
-    this.props.dispatch(actionCreators.editAlarm(hour, minute, label, index))
+  onEditAlarm = (hour, minute, label) => {
+    this.props.dispatch(actionCreators.editAlarm(hour, minute, label))
   }
 
   onRemoveAlarm = (index) => {
@@ -34,19 +35,23 @@ class Alarm extends Component {
     this.props.dispatch(actionCreators.toggleAlarmActive(index))
   }
 
-  onToggleEditDialog = () => {
-    this.props.dispatch(actionCreators.toggleEditDialog())
+  onToggleEditDialog = (index) => {
+    this.props.dispatch(actionCreators.toggleEditDialog(index))
+  }
+
+  onToggleAddDialog = () => {
+    this.props.dispatch(actionCreators.toggleAddDialog())
   }
 
   render() {
-    const {alarms, showEditDialog} = this.props
+    const {alarms, editIndex, showAddDialog} = this.props
 
     return (
       <View style={styles.container}>
         {/* Alarms list */}
         <List
           alarms={alarms}
-          showEditDialog={showEditDialog}
+          editIndex={editIndex}
           onEditAlarm={this.onEditAlarm}
           onRemoveAlarm={this.onRemoveAlarm}
           onToggleAlarmActive={this.onToggleAlarmActive}
@@ -55,17 +60,17 @@ class Alarm extends Component {
         {/* Add alarm button */}
         <View style={styles.bottom}>
           <TouchableOpacity
-            onPress={this.onToggleEditDialog}
+            onPress={this.onToggleAddDialog}
             style={styles.add}
           >
             <Text style={styles.addSign}>+</Text>
           </TouchableOpacity>
         </View>
         {/* Add alarm dialog */}
-        { showEditDialog &&
+        { showAddDialog &&
           <EditDialog
             onEditAlarm={this.onEditAlarm}
-            onToggleEditDialog={this.onToggleEditDialog}
+            onToggleEditDialog={this.onToggleAddDialog}
           />
         }
       </View>

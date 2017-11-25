@@ -6,15 +6,8 @@ import PopupDialog, { DialogButton } from 'react-native-popup-dialog';
 
 export default class EditDialog extends Component {
 
-  constructor(props) {
-    super(props)
-
-    const {hour, minute, label} = this.props
-    this.state = {
-      hour: hour,
-      minute: minute,
-      label: label
-    }
+  static defaultProps = {
+    alarmToEdit: {}
   }
 
   static propTypes = {
@@ -22,17 +15,31 @@ export default class EditDialog extends Component {
     onEditAlarm: PropTypes.func.isRequired
   }
 
+  constructor(props) {
+    super(props)
+
+    const {hour, minute, label} = this.props.alarmToEdit
+    this.state = {
+      hour: hour,
+      minute: minute,
+      label: label
+    }
+  }
+
   getTime = async () => {
     const {onToggleEditDialog} = this.props
     const {hour, label} = this.state
     let {minute} = this.state
 
-    if (minute !== undefined) minute = parseInt(minute)
+    if (hour !== undefined) {
+      var timePickerHour = parseInt(hour)
+      var timePickerMinute = parseInt(minute)
+    }
 
     try {
       const {action, hour, minute} = await TimePickerAndroid.open({
-        hour: hour,
-        minute: minute,
+        hour: timePickerHour,
+        minute: timePickerMinute,
         is24Hour: true,
       })
 
@@ -48,27 +55,31 @@ export default class EditDialog extends Component {
   }
 
   componentWillMount() {
-    this.getTime()
+    const {hour} = this.state
+
+    if (hour === undefined) this.getTime()
   }
 
   render() {
     const {onToggleEditDialog, onEditAlarm} = this.props
     const {hour, minute, label} = this.state
 
-    if (!hour) return null
+    if (hour === undefined) return null
 
     return (
       <PopupDialog
         height={null}
         show={true}
         ref={(popupDialog) => {this.popupDialog = popupDialog}}
-        onDismissed={onToggleEditDialog}
+        onDismissed={() => onToggleEditDialog()}
         dialogStyle={styles.container}
       >
         {/* Content */}
         <View style={styles.content}>
-          <Text style={styles.time}>{hour}:{minute}</Text>
-          <View style={{flexDirection: 'row'}}>
+          <TouchableOpacity onPress={this.getTime}>
+            <Text style={styles.time}>{hour}:{minute}</Text>
+          </TouchableOpacity>
+          <View style={styles.labelContainer}>
             <Text style={styles.label}>Label: </Text>
             <TextInput
               onChangeText={(text) => this.setState({label: text})}
@@ -78,10 +89,10 @@ export default class EditDialog extends Component {
         </View>
         {/* Actions */}
         <View style={styles.actionsContainer}>
-          <TouchableOpacity onPress={onToggleEditDialog}>
+          <TouchableOpacity onPress={() => onToggleEditDialog()}>
             <Text style={styles.action}>CANCEL</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => onEditAlarm(hour, minute, label, null)}>
+          <TouchableOpacity onPress={() => onEditAlarm(hour, minute, label)}>
             <Text style={styles.action}>SAVE</Text>
           </TouchableOpacity>
         </View>
@@ -106,6 +117,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'black',
     marginBottom: 10,
+  },
+  labelContainer: {
+    flexDirection: 'row',
+    marginRight: 20,
   },
   label: {
     fontSize: 18,
