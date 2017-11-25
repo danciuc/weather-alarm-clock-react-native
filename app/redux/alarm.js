@@ -38,11 +38,7 @@ export const actionCreators = {
 }
 
 const initialState = {
-  alarms: [
-    {hour: '10', minute: '00', label: 'Alarm 1', active: true},
-    {hour: '7', minute: '09', label: 'Alarm 2', active: false},
-    {hour: '6', minute: '07', label: 'Alarm 2 Alarm 2 Alarm 2 Alarm 2 Alarm 2 Alarm 2 Alarm 2 Alarm 2 Alarm 2 Alarm 2 Alarm 2 Alarm 2', active: false}
-  ],
+  alarms: [],
   editIndex: -1,
   showAddDialog: false
 }
