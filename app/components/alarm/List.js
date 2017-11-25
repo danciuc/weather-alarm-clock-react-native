@@ -67,7 +67,7 @@ export default class List extends Component {
           <EditDialog
             alarmToEdit={alarmToEdit}
             onEditAlarm={onEditAlarm}
-            onToggleEditDialog={onToggleEditDialog}
+            onToggle={onToggleEditDialog}
           />
         }
       </View>

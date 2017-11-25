@@ -70,7 +70,7 @@ class Alarm extends Component {
         { showAddDialog &&
           <EditDialog
             onEditAlarm={this.onEditAlarm}
-            onToggleEditDialog={this.onToggleAddDialog}
+            onToggle={this.onToggleAddDialog}
           />
         }
       </View>

@@ -11,7 +11,7 @@ export default class EditDialog extends Component {
   }
 
   static propTypes = {
-    onToggleEditDialog: PropTypes.func.isRequired,
+    onToggle: PropTypes.func.isRequired,
     onEditAlarm: PropTypes.func.isRequired
   }
 
@@ -27,7 +27,7 @@ export default class EditDialog extends Component {
   }
 
   getTime = async () => {
-    const {onToggleEditDialog} = this.props
+    const {onToggle} = this.props
     const {hour, label} = this.state
     let {minute} = this.state
 
@@ -46,8 +46,8 @@ export default class EditDialog extends Component {
       if (action !== TimePickerAndroid.dismissedAction) {
         if (minute < 10) minute = '0' + minute
         this.setState({hour: hour, minute: minute})
-      } else {
-        onToggleEditDialog()
+      } else if (timePickerHour === undefined) {
+        onToggle()
       }
     } catch ({code, message}) {
       console.warn('Cannot open time picker', message)
@@ -61,7 +61,7 @@ export default class EditDialog extends Component {
   }
 
   render() {
-    const {onToggleEditDialog, onEditAlarm} = this.props
+    const {onToggle, onEditAlarm} = this.props
     const {hour, minute, label} = this.state
 
     if (hour === undefined) return null
@@ -71,7 +71,7 @@ export default class EditDialog extends Component {
         height={null}
         show={true}
         ref={(popupDialog) => {this.popupDialog = popupDialog}}
-        onDismissed={() => onToggleEditDialog()}
+        onDismissed={() => onToggle()}
         dialogStyle={styles.container}
       >
         {/* Content */}
@@ -89,7 +89,7 @@ export default class EditDialog extends Component {
         </View>
         {/* Actions */}
         <View style={styles.actionsContainer}>
-          <TouchableOpacity onPress={() => onToggleEditDialog()}>
+          <TouchableOpacity onPress={() => onToggle()}>
             <Text style={styles.action}>CANCEL</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => onEditAlarm(hour, minute, label)}>
