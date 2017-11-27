@@ -43,7 +43,7 @@ export default () => {
   )
 
   const persistor = persistStore(store, {storage: AsyncStorage})
-  persistor.purgeAll()
+  // persistor.purgeAll()
 
   return { store, persistor }
 }
