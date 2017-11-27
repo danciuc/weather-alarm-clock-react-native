@@ -70,13 +70,16 @@ class Alarm extends Component {
           <View style={styles.bottom}>
             <TouchableOpacity
               onPress={this.onToggleAddDialog}
-              style={styles.add}
+              style={[styles.button, styles.add]}
             >
               <Text style={styles.addSign}>+</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => navigation.navigate('Weather')}>
-              <Text>Weather</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Weather')}
+              style={[styles.button, styles.weather]}
+            >
+              <Text style={styles.weatherText}>WEATHER</Text>
             </TouchableOpacity>
           </View>
         }
@@ -99,15 +102,25 @@ const styles = StyleSheet.create({
   },
   bottom: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
   },
-  add: {
+  button: {
     justifyContent: 'center',
     width: 70,
     height: 70,
     marginVertical: 10,
-    backgroundColor: 'green',
     borderRadius: 100,
+  },
+  add: {
+    backgroundColor: 'green',
+  },
+  weather: {
+    backgroundColor: 'deepskyblue',
+  },
+  weatherText: {
+    color: 'white',
+    alignSelf: 'center',
+    fontWeight: 'bold'
   },
   addSign: {
     fontSize: 70,

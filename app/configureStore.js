@@ -1,6 +1,7 @@
 import { AsyncStorage } from 'react-native'
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { persistStore, autoRehydrate } from 'redux-persist'
+import background from 'redux-background';
 // Thunk middleware allows actions to be chained and waited on by returning
 // a function from that action
 // https://github.com/gaearon/redux-thunk
@@ -14,12 +15,13 @@ import { alarmReducer } from './redux/alarm'
 import { weatherReducer } from './redux/weather'
 
 const reducer = combineReducers({
-  alarmReducer,
-  weatherReducer
+  alarmReducer: alarmReducer,
+  weatherReducer: weatherReducer,
+  background: background.reducer
 })
 
 // http://redux.js.org/docs/advanced/Middleware.html
-const middleware = [ thunk ]
+const middleware = [ thunk, background.middleware ]
 
 // Use the NODE_ENV to include logging and debugging tools
 // in development environment. They will be compiled out of
