@@ -2,18 +2,21 @@ import React, { Component } from 'react'
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Actions } from 'react-native-router-flux'
 
 import { actionCreators } from '../redux/alarm'
 
 import List from '../components/alarm/List'
 import EditDialog from '../components/alarm/EditDialog'
 
-const mapStateToProps = (state) => ({
-  alarms: state.alarms,
-  editIndex: state.editIndex,
-  showAddDialog: state.showAddDialog
-})
+const mapStateToProps = (state) => {
+  const {alarmReducer} = state
+
+  return {
+    alarms: alarmReducer.alarms,
+    editIndex: alarmReducer.editIndex,
+    showAddDialog: alarmReducer.showAddDialog
+  }
+}
 
 class Alarm extends Component {
 
@@ -21,6 +24,11 @@ class Alarm extends Component {
     alarms: PropTypes.array.isRequired,
     editIndex: PropTypes.number.isRequired,
     dispatch: PropTypes.func.isRequired,
+    navigation: PropTypes.object.isRequired
+  }
+
+  static navigationOptions = {
+    title: 'Alarms'
   }
 
   onEditAlarm = (hour, minute, label) => {
@@ -44,7 +52,7 @@ class Alarm extends Component {
   }
 
   render() {
-    const {alarms, editIndex, showAddDialog} = this.props
+    const {alarms, editIndex, showAddDialog, navigation} = this.props
 
     return (
       <View style={styles.container}>
@@ -65,6 +73,10 @@ class Alarm extends Component {
               style={styles.add}
             >
               <Text style={styles.addSign}>+</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => navigation.navigate('Weather')}>
+              <Text>Weather</Text>
             </TouchableOpacity>
           </View>
         }

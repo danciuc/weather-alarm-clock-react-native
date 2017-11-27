@@ -43,7 +43,7 @@ const initialState = {
   showAddDialog: false
 }
 
-export const reducer = (state=initialState, action) => {
+export const alarmReducer = (state=initialState, action) => {
   const {type, payload} = action
   const {alarms, showAddDialog, editIndex} = state
 
