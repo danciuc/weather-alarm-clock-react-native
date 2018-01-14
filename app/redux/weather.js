@@ -50,7 +50,6 @@ export const weatherReducer = (state=initialState, action) => {
 
     case types.GET_FORECAST_RESPONSE: {
       if (error) {
-        console.log(payload)
         return {...state, loading: false, error: true}
       }
 

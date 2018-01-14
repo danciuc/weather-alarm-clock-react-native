@@ -1,7 +1,8 @@
 import { AsyncStorage } from 'react-native'
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
-import { persistStore, autoRehydrate } from 'redux-persist'
-import background from 'redux-background';
+import { createStore, applyMiddleware, compose } from 'redux'
+import { persistStore, persistCombineReducers } from 'redux-persist'
+import createFilter, { createBlacklistFilter } from 'redux-persist-transform-filter';
+
 // Thunk middleware allows actions to be chained and waited on by returning
 // a function from that action
 // https://github.com/gaearon/redux-thunk
@@ -13,15 +14,39 @@ import createLogger from 'redux-logger'
 
 import { alarmReducer } from './redux/alarm'
 import { weatherReducer } from './redux/weather'
+import { authReducer } from './redux/auth'
 
-const reducer = combineReducers({
+const saveAlarmFilter = createFilter(
+  'alarmReducer',
+  ['alarms']
+);
+const saveWeatherFilter = createFilter(
+  'weatherReducer',
+  ['location', 'lastSync', 'forecast']
+);
+const saveAuthFilter = createFilter(
+  'authReducer',
+  ['user', 'userRole']
+);
+
+const config = {
+  key: 'primary',
+  storage: AsyncStorage,
+  transforms: [
+    saveAlarmFilter,
+    saveWeatherFilter,
+    saveAuthFilter
+  ]
+}
+
+const reducer = persistCombineReducers(config, {
   alarmReducer: alarmReducer,
   weatherReducer: weatherReducer,
-  background: background.reducer
+  authReducer: authReducer
 })
 
 // http://redux.js.org/docs/advanced/Middleware.html
-const middleware = [ thunk, background.middleware ]
+const middleware = [ thunk ]
 
 // Use the NODE_ENV to include logging and debugging tools
 // in development environment. They will be compiled out of
@@ -33,19 +58,14 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const enhancer = compose(
-  applyMiddleware(...middleware),
-  autoRehydrate()
-);
+  applyMiddleware(...middleware)
+)
 
-export default () => {
-  // http://redux.js.org/docs/api/createStore.html
-  const store = createStore(
-    reducer,
-    enhancer
-  )
+export default function configureStore() {
 
-  const persistor = persistStore(store, {storage: AsyncStorage})
-  // persistor.purgeAll()
+      const store = createStore(reducer, enhancer)
+      const persistor = persistStore(store)
+      // persistor.purgeAll()
 
-  return { store, persistor }
+      return {store, persistor}
 }

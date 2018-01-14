@@ -31,6 +31,13 @@ class Alarm extends Component {
     title: 'Alarms'
   }
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      userRole: props.navigation.state.params ? props.navigation.state.params.userRole : null
+    }
+  }
+
   onEditAlarm = (hour, minute, label) => {
     this.props.dispatch(actionCreators.editAlarm(hour, minute, label))
   }
@@ -53,11 +60,15 @@ class Alarm extends Component {
 
   render() {
     const {alarms, editIndex, showAddDialog, navigation} = this.props
+    const {userRole} = this.state
+
+    const isAdmin = userRole == 'admin'
 
     return (
       <View style={styles.container}>
         {/* Alarms list */}
         <List
+          isAdmin={isAdmin}
           alarms={alarms}
           editIndex={editIndex}
           onEditAlarm={this.onEditAlarm}
@@ -65,15 +76,17 @@ class Alarm extends Component {
           onToggleAlarmActive={this.onToggleAlarmActive}
           onToggleEditDialog={this.onToggleEditDialog}
         />
-        {/* Add alarm button */}
+        {/* Add alarm and Weather buttons */}
         { editIndex < 0 &&
           <View style={styles.bottom}>
-            <TouchableOpacity
-              onPress={this.onToggleAddDialog}
-              style={[styles.button, styles.add]}
-            >
-              <Text style={styles.addSign}>+</Text>
-            </TouchableOpacity>
+            { isAdmin &&
+              <TouchableOpacity
+                onPress={this.onToggleAddDialog}
+                style={[styles.button, styles.add]}
+              >
+                <Text style={styles.addSign}>+</Text>
+              </TouchableOpacity>
+            }
 
             <TouchableOpacity
               onPress={() => navigation.navigate('Weather')}

@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { startDaemon } from '../../node_modules/redux-background/src/actions';
 
 import { actionCreators } from '../redux/weather'
 
@@ -46,13 +45,6 @@ class Weather extends Component {
     if (forecast.length == 0) this.onGetForecast()
   }
 
-  componentDidMount() {
-    // const action = startDaemon('SYNC_FORECAST', this.onGetForecast, {
-    //   interval: 1000 * 60 * 10,
-    // });
-    // this.props.dispatch(action)
-  }
-
   render() {
     const {forecast, location, lastSync, loading, error} = this.props
 
@@ -67,7 +59,7 @@ class Weather extends Component {
     if (error) {
       return (
         <View style={styles.centralContainer}>
-          <Text>Couldn't fetch weather forecast!</Text>
+          <Text>Couldn not fetch weather forecast!</Text>
         </View>
       )
     }

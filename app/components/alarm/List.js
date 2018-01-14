@@ -8,6 +8,7 @@ import EditDialog from './EditDialog'
 export default class List extends Component {
 
   static propTypes = {
+    isAdmin: PropTypes.bool.isRequired,
     alarms: PropTypes.array.isRequired,
     editIndex: PropTypes.number.isRequired,
     onEditAlarm: PropTypes.func.isRequired,
@@ -17,7 +18,7 @@ export default class List extends Component {
   }
 
   renderAlarm = (alarm, index) => {
-    const {onToggleEditDialog, onToggleAlarmActive, onRemoveAlarm, onEditAlarm} = this.props
+    const {onToggleEditDialog, onToggleAlarmActive, onRemoveAlarm, onEditAlarm, isAdmin} = this.props
 
     return (
       <View key={index} style={styles.item}>
@@ -34,9 +35,11 @@ export default class List extends Component {
             isChecked={alarm.active}
             onToggle={() => onToggleAlarmActive(index)}
           />
-          <TouchableOpacity onPress={() => onRemoveAlarm(index)}>
-            <Text style={styles.remove}>&times;</Text>
-          </TouchableOpacity>
+          { isAdmin &&
+            <TouchableOpacity onPress={() => onRemoveAlarm(index)}>
+              <Text style={styles.remove}>&times;</Text>
+            </TouchableOpacity>
+          }
         </View>
       </View>
     )
